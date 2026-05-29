@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Nunito', sans-serif; background: #080808; color: #a0a0a0; margin: 0; display: flex; }
+        
+.sidebar { 
+    width: 250px; 
+    background: #0f0f0f; 
+    height: 100vh; 
+    padding: 30px 15px;
+    position: sticky; 
+    top: 0; 
+    box-sizing: border-box; 
+    container-type: inline-size;
+}
+
+.brand { 
+    color: #ffffff; 
+    margin-bottom: 2rem; 
+    display: flex;
+    flex-direction: column;
+    gap: 0.2em;
+    font-size: clamp(1rem, 11cqw, 1.6rem); 
+    line-height: 1.2;
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+}
+
+.brand-top {
+    width: 100%;
+}
+
+.brand-bottom {
+    width: 100%;
+    margin-top: 2px;
+}
+
+.brand span {
+    display: inline-block;
+}
+
+.brand .divider {
+    color: #404040;
+    padding: 0 2px;
+}
+
+@container (max-width: 200px) {
+    .brand {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .brand .divider {
+        display: block;
+        width: 100%;
+        font-size: 0.8rem;
+        letter-spacing: -1px;
+        color: #333;
+        margin: 4px 0;
+    }
+}
+.nav-btn { display: block; width: 100%; padding: 15px; margin-bottom: 5px; cursor: pointer; 
+    background: transparent; border: none; color: #a0a0a0; text-align: left; font-size: 1rem; }
+.nav-btn:hover { color: #ffffff; }
+.nav-btn.active { color: #ffffff; font-weight: bold; }
+
+.main { flex: 1; padding: 50px; max-width: 700px; color: #ffffff; }
+h1 { color: #ffffff; }
+        
+.quiz-box { margin-top: 30px; padding: 25px; border: 1px solid #333; transition: 0.5s; }
+.btn-opt { display: block; width: 100%; margin: 10px 0; padding: 12px; 
+    background: #1a1a1a; color: #ffffff; border: 1px solid #333; cursor: pointer; }
+.nav-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 40px;
+    width: 100%;
+}
+
+.nav-btn-sm {
+    padding: 10px 20px;
+    cursor: pointer;
+    background: #1a1a1a;
+    color: #ffffff;
+    border: 1px solid #333;
+}
+
+.menu-toggle {
+    display: none;
+}
+
+.mobile-header {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
+    .mobile-header {
+        display: flex;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background: #1a1a1a;
+        border-bottom: 1px solid #2d2d2d;
+        padding: 0 20px;
+        box-sizing: border-box;
+        z-index: 1000;
+    }
+
+    .menu-toggle {
+        display: block;
+        background: #2a2a2a;
+        color: #ffffff;
+        border: 1px solid #444;
+        padding: 8px 14px;
+        font-family: 'Nunito', sans-serif;
+        font-weight: bold;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 0.9rem;
+    }
+    .menu-toggle:hover {
+        background: #333333;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 60px;
+        left: -250px;
+        width: 250px;
+        height: calc(100vh - 60px);
+        z-index: 999;
+        transition: left 0.3s ease;
+        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .main {
+        padding: 30px 20px !important;
+        margin-top: 60px;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+}
+    </style>
+</head>
+<body>
+
+<div class="mobile-header">
+    <button id="menu-toggle" class="menu-toggle">☰ Menu</button>
+</div>
+
+<aside class="sidebar">
+    <div class="brand">
+        <div class="brand-top">Small but Mighty</div>
+        <div class="brand-bottom">Google</div>
+    </div>
+    <button class="nav-btn" onclick="render('home', this)">Home</button>
+    <button class="nav-btn" onclick="render('ecology', this)">Ecology</button>
+    <button class="nav-btn" onclick="render('environment', this)">Environment</button>
+    <button class="nav-btn" onclick="render('society', this)">Society</button>
+    <button class="nav-btn" onclick="render('conclusion', this)">Conclusion</button>
+    <button class="nav-btn" onclick="render('references', this)">References</button>
+</aside>
+
+<main class="main" id="content">
+    <h1>Loading...</h1>
+    <p>this should only take a sec.</p>
+</main>
+
+<script>
+    const pageOrder = ['home', 'ecology', 'environment', 'society', 'conclusion', 'references'];
+
+const data = {
+    home: {
+        title: "Small but Mighty",
+        sections: [
+            { type: "text", content: "Most people think that Google is nothing more than a search engine. A tool used to help with finding information online. But Google is much more than a nice logo and a search bar. It is now a multi trillion dollar company, and has impacted society and this Earth in more ways than you can think." },
+            { type: "image", src: "images/googlelogo.png", alt: "Google Logo" },
+            { type: "quiz", q: "Is Google primarily just a search engine in modern society?", options: ["A) Yes, it has remained focused only on web search.", "B) No, it is a multi-trillion dollar company with massive ecological and societal impacts."], a: 1, text: "B) No, it is a multi-trillion dollar company with massive ecological and societal impacts." }
+        ]
+    },
+    ecology: {
+        title: "Ecology",
+        sections: [
+            { type: "text", content: "<strong>Water Consumption</strong><br><br>Google's infrastructure and data centres have a significant impact on ecology through their massive reliance on water for data centre cooling. Google sources most of its water from municipal water supplies, industrial pipelines, and even directly from local rivers. (Adcock, 2026) This heavy water usage on local water supplies directly alters marine and aquatic ecosystems in a negative way. Less water moving through the system causes ecological problems such as loss of native animals due to destruction of breeding spots and food sources, and loss of vegetation, which affects water quality and native marine life looking for shelter. (Murray-Darling Basin Authority, 2025)" },
+            { type: "quiz", q: "What is a primary ecological consequence of Google's data centre water consumption?", options: ["A) Improved regional water filtration.", "B) Destruction of breeding spots and loss of native aquatic wildlife.", "C) Lower global surface temperatures."], a: 1, text: "B) Destruction of breeding spots and loss of native aquatic wildlife." },
+            { type: "text", content: "<strong>AI (Artificial Intelligence) in use for nature conservation and wildlife</strong><br><br>Google actively participates in wildlife preservation through the use of AI technologies. Google has developed AI-powered platforms that analyse camera trap footage. In 2019, a global assessment projected the extinction of one million species. (Google, 2020) This extreme situation inclined Google to create technology that could assist in resolving this major issue. This technology helps overcome problems beyond human capabilities, such as manually identifying species from millions of images. Researchers who have camera trap data footage can upload it to Google, where they can manage, identify and analyse their biodiversity data. (Google, 2020) This leads to improved species identification and real-time monitoring, which directly supports the protection of endangered wildlife. Google powers these ecological contributions through the Wildlife Insights platform and its open-source AI model, SpeciesNet." },
+            { type: "split", content: "Image captured by the Wildlife Observatory of Australia (WildObs), one of the groups that has trained the open-source version of SpeciesNet to identify additional species of local importance. Featured here is an orange-footed scrubfowl.", src: "images/orange.png", alt: "An orange-footed scrubfowl captured via wildlife camera trap" },
+            { type: "text", content: "<small>Click image to zoom</small>" },
+            { type: "text", content: "<small>​ </small>" },
+            { type: "text", content: "<strong>What this means</strong><br><br>While Google’s AI provides essential tools that are beneficially impacting ecology, these benefits must be weighed against the billion gallons of water used to cool the very servers that run these models. This research suggests that Google relies excessively on digital devices and platforms to function and solve problems that may negatively impact that problem in some way to create the tools necessary to resolve them. Google is using massive amounts of natural resources to create the digital tools necessary to save the remaining biodiversity from the effects of Google's resource overconsumption." },
+            { type: "quiz", q: "What paradox does the research highlight regarding Google's environmental tools?", options: ["A) The AI platforms use no electricity, but cost too much to build.", "B) Google consumes massive natural resources to run the infrastructure required to build tools for saving biodiversity.", "C) Data centres only use ocean water, which doesn't affect local ecosystems."], a: 1, text: "B) Google consumes massive natural resources to run the infrastructure required to build tools for saving biodiversity." }
+        ]
+    },
+    environment: {
+        title: "Environment",
+        sections: [
+            { type: "text", content: "<strong>Renewable Energy and improved efficiency</strong><br><br>Google has made many clear advancements and innovations to transition to sustainable energy, balancing its massive power needs and environmental sustainability. Since 2017, Google has maintained a 100% renewable energy match for its global operations, including all data centres and offices. (Hölzle, 2016) To maintain these 100% renewable energy 24/7, they purchase energy from multiple diverse sources. This is because wind and solar energy are intermittent, so in order to have access to energy throughout every hour of the day, they buy from both sources." },
+            { type: "text", content: "While Google’s total energy demand has grown, the company is now operating at roughly six times more than it was five years ago. (Google, 2024) This means it can perform more computations while using less energy per task. This increased efficiency reduces Google’s greenhouse gas emissions, reducing Google’s negative impact on the environment." },
+            { type: "image", src: "images/renewableenergygraph.png", alt: "Data showing Google 2024 Environmental Report indicators" },
+            { type: "text", content: "<small>Click image to zoom</small>" },
+            { type: "text", content: "<small>​ </small>" },
+            { type: "text", content: "<strong>Greenhouse gas emissions and energy consumption from AI (Artificial Intelligence) and data centres</strong><br><br>Google's infrastructure and data centre management have had a significant effect on the environment due to the high power requirements of the data centres and artificial intelligence systems. The expansion of artificial intelligence requires a large amount of computational power, which increases the energy consumption. Although Google uses renewable energy sources, the power requirements continue to rise due to an increase in demand for AI tools and services, such as Gemini and AI overview (owned by Google DeepMind). This negatively impacts the environment as more energy and infrastructure are needed to run these systems. (Google, 2024)<br><br>The increase in energy usage contributes to greenhouse gas emissions. Google's greenhouse gas emissions have been drastically increasing over the past few years. (Rahman-Jones, 2024) which causes rising global surface temperatures, melting glaciers, sea-level rise, and intensified extreme weather events. (United Nations, 2022)" },
+            { type: "quiz", q: "Why are Google's greenhouse gas emissions increasing despite their use of renewable energy?", options: ["A) They have stopped buying solar power entirely.", "B) The massive computational power required for expanding AI tools like Gemini dramatically raises overall energy demand.", "C) Data centres are being built without cooling systems."], a: 1, text: "B) The massive computational power required for expanding AI tools like Gemini dramatically raises overall energy demand." },
+            { type: "text", content: "<strong>Water consumption and impact on natural resources</strong><br><br>Google’s environmental impact is also evident through its extensive water usage for cooling data centres and offices. These facilities need thorough water cooling in order to function at safe and efficient temperatures. This water is often sourced from local municipal water systems or natural water bodies, placing stress on regional water supplies. (Jackson, 2025)<br><br>High water consumption can reduce the availability of water for ecosystems and human use, particularly in areas already experiencing water scarcity. This contributes to environmental issues such as salinisation or acidification of water. (IMATECH, 2024)" },
+            { type: "text", content: "<strong>What this means</strong><br><br>This research indicates that while Google is making strong efforts through improving factors such as renewable energy usage and improved efficiency, its rapidly growing energy and water resource demands continue to place pressure on the environment. Google's significant rise in greenhouse gas emissions and resource consumption signifies that even with Google’s environmental improvements and efforts, they may be outweighed by their resource-hungry technology, such as AI. Although solutions are being implemented, the large scale of Google's technology and systems continues to contribute to negative impacts towards the environment." },
+            { type: "image", src: "images/nwdiag.png", alt: "Environmental and Ecological Impacts Network Diagram" },
+            { type: "text", content: "<small>Click image to zoom</small>" },
+            { type: "text", content: "<small>​ </small>" },
+            { type: "text", content: "<strong>Infrastructural Echoes</strong><br><br>The environmental network diagram clarifies how systemic changes spiral outward from local operations. As modern calculations shift toward complex machine learning models, the continuous loop of grid power allocation and thermodynamic water consumption demonstrates that digital conveniences carry immediate, tangible impacts on regional public utilities and geographic systems worldwide." }
+        ]
+    },
+    society: {
+        title: "Society",
+        sections: [
+            { type: "text", content: "<strong>Access to information and knowledge sharing</strong><br><br>Google has significantly transformed society through online platforms, making information widely accessible. Through digital services such as search engines, people can instantly access vast amounts of information, which has improved education, research, and decision-making. This ease of access allows people to become more informed and supports learning for a wide variety of audiences.<br><br>The availability of information has also contributed to greater global connectivity, enabling people to share ideas, collaborate and communicate more effectively. This has a positive impact on societal development, as knowledge can be spread quickly and efficiently." },
+            { type: "quiz", q: "How has Google's primary search infrastructure positively impacted societal development?", options: ["A) By standardizing local school curriculums.", "B) By making vast amounts of information accessible to improve education and global connectivity.", "C) By substituting human memory entirely with digital storage."], a: 1, text: "B) By making vast amounts of information accessible to improve education and global connectivity." },
+            { type: "text", content: "<strong>Impact of AI (Artificial Intelligence) on human thinking and decision-making</strong><br><br>Google’s development of artificial intelligence, particularly generative AI tools, such as Gemini, has begun to influence how people think and make decisions. While these tools can improve efficiency and productivity, over-reliance on AI may reduce critical thinking skills. Users may depend on AI-generated responses rather than analysing information themselves. (Missia Temler, 2026)<br><br>This shift can impact education and workplace environments, where independent thinking and problem-solving may be necessary. Over time, this may lead to a decline in cognitive abilities, affecting how people think and make decisions within our society." },
+            { type: "quiz", q: "According to experts, what is a social risk of an over-reliance on generative AI tools?", options: ["A) A reduction in human critical thinking skills and independent problem-solving.", "B) Accelerated physical development of the human brain.", "C) A total loss of connection to internet services."], a: 0, text: "A) A reduction in human critical thinking skills and independent problem-solving." },
+            { type: "text", content: "<strong>Changes in social interaction and communication</strong><br><br>Google has also influenced how people interact and form relationships. Digital platforms supported by Google, such as advertising and online services, make it a lot more common to connect and discover communities. (Spurgaitis, 2011) However, these interactions may become more superficial, as online communication replaces genuine face-to-face interactions. (Spurgaitis, 2011) This can affect the quality of relationships and reduce meaningful social engagement within communities." },
+            { type: "text", content: "<strong>What this means</strong><br><br>This information shows that Google has both positive and negative impacts on society. While it greatly improves access to information and global connectivity, it also brings in problems such as reduced critical thinking and weaker interpersonal relationships. The widespread use of AI and digital tools indicates that society is becoming increasingly dependent on technology. This creates a balance where online resources and digital tools benefit society, but may also gradually change human behaviour and critical thinking skills in potentially harmful ways." },
+            { type: "image", src: "images/societalnwdiag.png", alt: "Societal Impacts Network Diagram" },
+            { type: "text", content: "<small>Click image to zoom</small>" },
+            { type: "text", content: "<small>​ </small>" },
+            { type: "text", content: "<strong>Synthesizing Digital Dependency</strong><br><br>This interconnected societal map shows that global technical access functions as a delicate balancing act. While communal mobilization and collaborative projects accelerate across shared networks, the invisible cost manifests as a gradual decay of deep individual cognition and an uptick in highly mediated, shallow connections across our civic spaces." }
+        ]
+    },
+    references: {
+        title: "References",
+        sections: [
+            { type: "text", content: "<strong>Ecology</strong><ul><li>Adcock, C. (2026, February 23). As data centres boom in Oklahoma, so does water demand. The Frontier. <a href='https://www.readfrontier.org/stories/as-data-centers-boom-in-oklahoma-so-does-water-demand/' target='_blank'>Link</a></li><li>Jackson, A. (2025, June 30). What Google’s Environmental Report Says About Data Centres. Datacentremagazine.com; Bizclik Media Ltd. <a href='https://datacentremagazine.com/news/google-environmental-report-2025-the-data-centre-impact' target='_blank'>Link</a></li><li>Murray-Darling Basin Authority. (2025, April 29). Water for the environment | Murray–Darling Basin Authority. Mdba.gov.au. <a href='https://www.mdba.gov.au/water-use/water-environment' target='_blank'>Link</a></li><li>Birch, T. (2019, December 17). Using AI to find where the wild things are. Google. <a href='https://blog.google/products-and-platforms/products/earth/ai-finds-where-the-wild-things-are/' target='_blank'>Link</a></li><li>Birch, T., & Morris, D. (2026, March 6). Where wild things roam: Identifying wildlife with SpeciesNet. Research.google. <a href='https://research.google/blog/where-wild-things-roam-identifying-wildlife-with-speciesnet/' target='_blank'>Link</a></li><li>Google. (2020). Nature Conservation. Google - Nature Conservation. <a href='https://www.google.com/intl/en_ca/earth/outreach/special-projects/conservation/' target='_blank'>Link</a></li><li>IPBES. (2019, May 5). Media Release: Nature’s Dangerous Decline “Unprecedented”; Species Extinction Rates “Accelerating” | IPBES. Ipbes.net. <a href='https://www.ipbes.net/news/Media-Release-Global-Assessment' target='_blank'>Link</a></li><li>Wildlife Insights. (2019). Home | Wildlife Insights. Wildlifeinsights.org. <a href='https://wildlifeinsights.org/' target='_blank'>Link</a></li></ul>" },
+            { type: "text", content: "<strong>Environment</strong><ul><li>Google. (2024). Environmental Report. <a href='https://www.gstatic.com/gumdrop/sustainability/google-2024-environmental-report.pdf' target='_blank'>Link</a></li><li>Hölzle, U. (2016). Clean Energy: Renewable Energy Milestone - Google Sustainability. Sustainability. <a href='https://sustainability.google/stories/announcement-100/' target='_blank'>Link</a></li><li>IMATECH. (2024, March 5). How does water consumption in industry affect the environment? – IMASA TECHNOLOGIES. Imasatechnologies.com. <a href='https://imasatechnologies.com/en/2024/03/05/how-does-water-consumption-in-industry-affect-the-environment/' target='_blank'>Link</a></li><li>Jackson, A. (2025, June 30). What Google’s Environmental Report Says About Data Centres. Datacentremagazine.com; Bizclik Media Ltd. <a href='https://datacentremagazine.com/news/google-environmental-report-2025-the-data-centre-impact' target='_blank'>Link</a></li><li>Rahman-Jones, I. (2024, July 3). AI means Google’s greenhouse gas emissions up 48% in 5 years. Www.bbc.com. <a href='https://www.bbc.com/news/articles/c51yvz51k2xo' target='_blank'>Link</a></li><li>United Nations. (2022). Causes and Effects of Climate Change. United Nations. <a href='https://www.un.org/en/climatechange/science/causes-effects-climate-change' target='_blank'>Link</a></li></ul>" },
+            { type: "text", content: "<strong>Society</strong><ul><li>Flensted, T. (2024, April 24). How Many People Use Google? Statistics & Facts (2023). Seo.ai. <a href='https://seo.ai/blog/how-many-people-use-google' target='_blank'>Link</a></li><li>Temler, M. (2026, March 15). Over-Reliance on AI May Harm Your Cognitive Ability, Experts Warn. ScienceAlert. <a href='https://www.sciencealert.com/over-reliance-on-ai-may-harm-your-cognitive-ability-experts-warn' target='_blank'>Link</a></li></ul>" }
+        ]
+    },
+    conclusion: {
+        title: "Conclusion",
+        sections: [
+            { type:"text", content:"Google is a company that has undoubtedly provided some of the most services in the world. With a mix of Search, Docs, recent AI additions, and their environmental efforts that most people have never heard of, they successfully turned a small thing into a large, mult-trillion dollar branch of tools and contributions to the world."}
+        ]
+    }
+};
+
+    function saveProgress(tab) {
+        const state = {
+            tab: tab,
+            time: Date.now()
+        };
+        localStorage.setItem('lastSession', JSON.stringify(state));
+    }
+
+    function render(page, btn) {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        const navBtn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.innerText.toLowerCase() === page);
+        if(navBtn) navBtn.classList.add('active');
+
+        const p = data[page];
+        const contentDiv = document.getElementById('content');
+        contentDiv.innerHTML = `<h1>${p.title}</h1>`;
+
+        let quizCount = 0;
+        p.sections.forEach(s => {
+            if (s.type === "text") contentDiv.innerHTML += `<p>${s.content}</p>`;
+            if (s.type === "image") contentDiv.innerHTML += `<img src="${s.src}" alt="${s.alt}" style="width:100%; border-radius:8px; margin: 20px 0;">`;
+            if (s.type === "quiz") {
+                const id = `quiz-${quizCount++}`;
+                contentDiv.innerHTML += `<div id="${id}" class="quiz-box"><p>${s.q}</p>${s.options.map((o, i) => `<button class="btn-opt" onclick="check(${i}, ${s.a}, '${s.text}', '${id}')">${o}</button>`).join('')}</div>`; }
+            { if (s.type === "split") contentDiv.innerHTML += `<div style="display:flex;width:100%;align-items:center;margin:20px 0;"><div style="width:5%"></div><div style="width:40%;padding-right:20px;"><p>${s.content}</p></div><div style="width:50%;"><img src="${s.src}" alt="${s.alt}" style="width:100%;border-radius:8px;display:block;"></div><div style="width:5%"></div></div>`;
+            }
+        });
+
+        const currentIndex = pageOrder.indexOf(page);
+        let navHTML = '<div class="nav-container">';
+
+        if(currentIndex > 0) {
+            navHTML += `<button class="nav-btn-sm" onclick="render('${pageOrder[currentIndex-1]}')">← Back</button>`;
+        }
+
+        if(currentIndex < pageOrder.length - 1) {
+            navHTML += `<button class="nav-btn-sm" onclick="render('${pageOrder[currentIndex+1]}')">Next →</button>`;
+        }
+
+        navHTML += '</div>';
+        if (localStorage.getItem('navHintDismissed') !== 'true') {
+            navHTML += `
+                <div id="nav-hint" style="margin-top: 15px; font-size: 0.85rem; color: #606060; display: flex; align-items: center; gap: 12px; animation: fadeIn 0.3s ease;">
+                    <span>Tip: You can use the Left Arrow Key and Right Arrow Keys to navigate pages.</span>
+                    <button onclick="dismissNavHint()" style="background: transparent; border: none; color: #a0a0a0; text-decoration: underline; cursor: pointer; font-size: 0.85rem; padding: 0;">Dismiss</button>
+                </div>
+            `;
+        }
+
+        contentDiv.innerHTML += navHTML;
+    }
+
+    window.onload = () => {
+        const saved = JSON.parse(localStorage.getItem('lastSession'));
+        const threeMinutes = 3 * 60 * 1000;
+        
+        let targetTab = 'home';
+        if (saved && (Date.now() - saved.time < threeMinutes)) {
+            targetTab = saved.tab;
+        }
+        
+        const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.innerText.toLowerCase() === targetTab);
+        render(targetTab, btn);
+
+        setInterval(() => {
+            const active = document.querySelector('.nav-btn.active');
+            if (active) {
+                saveProgress(active.innerText.toLowerCase());
+            }
+        }, 5000);
+    };
+
+    function check(sel, ans, correctText, targetId) {
+        const box = document.getElementById(targetId);
+        if (sel === ans) { 
+            box.innerHTML = `<h3 style="color: #4caf50;">Correct!</h3>`; 
+        } else { 
+            box.innerHTML = `<h3 style="color: #f44336;">Incorrect. Answer: ${correctText}</h3>`; 
+        }
+    }
+
+let scale = 1, panX = 0, panY = 0, isDragging = false, startX = 0, startY = 0, hasMoved = false;
+
+document.addEventListener('click', (e) => {
+    if (e.target.tagName === 'IMG' && e.target.id !== 'lightbox-img') {
+        openLightbox(e.target.src);
+    }
+});
+
+function openLightbox(src) {
+    const lb = document.getElementById('lightbox');
+    const img = document.getElementById('lightbox-img');
+    if (!lb || !img) return;
+    img.src = src;
+    scale = 1; panX = 0; panY = 0;
+    updateTransform();
+    lb.style.display = 'flex';
+}
+
+function closeLightbox() {
+    const lb = document.getElementById('lightbox');
+    if (lb) lb.style.display = 'none';
+}
+
+function updateTransform() {
+    const img = document.getElementById('lightbox-img');
+    if (img) img.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+}
+
+document.addEventListener('mousedown', (e) => {
+    const lb = document.getElementById('lightbox');
+    if (!lb || !lb.contains(e.target) || e.button !== 0) return;
+    
+    isDragging = true;
+    hasMoved = false;
+    startX = e.clientX - panX;
+    startY = e.clientY - panY;
+    lb.style.cursor = 'grabbing';
+});
+
+window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    
+    if (Math.abs(e.clientX - (startX + panX)) > 4 || Math.abs(e.clientY - (startY + panY)) > 4) {
+        hasMoved = true;
+    }
+    panX = e.clientX - startX;
+    panY = e.clientY - startY;
+    updateTransform();
+});
+
+window.addEventListener('mouseup', (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+    
+    const lb = document.getElementById('lightbox');
+    if (lb) lb.style.cursor = 'grab';
+    
+    if (!hasMoved) {
+        if (e.target.id === 'lightbox-img') {
+            if (scale === 1) {
+                scale = 2.0;
+            } else {
+                scale = 1.0;
+                panX = 0;
+                panY = 0;
+            }
+            updateTransform();
+        } else if (e.target.id === 'lightbox' || e.target.id === 'close-lightbox') {
+            closeLightbox();
+        }
+    }
+});
+
+document.addEventListener('wheel', (e) => {
+    const lb = document.getElementById('lightbox');
+    if (!lb || !lb.contains(e.target)) return;
+    
+    e.preventDefault();
+    if (e.deltaY < 0) {
+        scale += 0.1;
+    } else {
+        scale = Math.max(0.5, scale - 0.1);
+    }
+    updateTransform();
+}, { passive: false });
+
+window.addEventListener('keydown', (e) => {
+    const lb = document.getElementById('lightbox');
+    if (lb && lb.style.display === 'flex') return;
+
+    const activeBtn = document.querySelector('.nav-btn.active');
+    if (!activeBtn) return;
+    
+    const currentTab = activeBtn.innerText.toLowerCase().trim();
+    const currentIndex = pageOrder.indexOf(currentTab);
+    if (currentIndex === -1) return;
+
+    if (e.key === 'ArrowLeft' && currentIndex > 0) {
+        const prevTab = pageOrder[currentIndex - 1];
+        const targetBtn = Array.from(document.querySelectorAll('.nav-btn'))
+            .find(b => b.innerText.toLowerCase().trim() === prevTab);
+        render(prevTab, targetBtn);
+    } 
+    else if (e.key === 'ArrowRight' && currentIndex < pageOrder.length - 1) {
+        const nextTab = pageOrder[currentIndex + 1];
+        const targetBtn = Array.from(document.querySelectorAll('.nav-btn'))
+            .find(b => b.innerText.toLowerCase().trim() === nextTab);
+        render(nextTab, targetBtn);
+    }
+});
+
+function dismissNavHint() {
+    localStorage.setItem('navHintDismissed', 'true');
+    const hintElement = document.getElementById('nav-hint');
+    if (hintElement) {
+        hintElement.remove();
+    }
+}
+
+const menuToggle = document.getElementById('menu-toggle');
+const sidebar = document.querySelector('.sidebar');
+
+menuToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    sidebar.classList.toggle('active');
+});
+
+document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+            sidebar.classList.remove('active');
+        }
+    });
+});
+
+document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 768 && !sidebar.contains(e.target) && e.target !== menuToggle) {
+        sidebar.classList.remove('active');
+    }
+});
+</script>
+<div id="lightbox" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(8,8,8,0.95); z-index:9999; justify-content:center; align-items:center; overflow:hidden; cursor:grab; user-select:none;">
+    <span id="close-lightbox" style="position:absolute; top:25px; right:35px; color:#a0a0a0; font-size:35px; font-weight:bold; cursor:pointer; z-index:10000;">&times;</span>
+    <img id="lightbox-img" src="" alt="Fullscreen view" draggable="false" style="transition: transform 0.05s linear; transform-origin: center center; max-width:90%; max-height:90%; object-fit:contain;">
+</div>
+</body>
+</html>
